@@ -61,7 +61,7 @@ class PayuShippingTaxApiCalc
 
         if (email_exists($email)) {
             $user = get_user_by('email', $email);
-            $token = $this->payu_generate_authentication_token($user->ID);
+            $token = $this->payu_generate_authentication_token($user->ID, $email);
 
             return new WP_REST_Response([
                 'status' => true,
@@ -88,8 +88,10 @@ class PayuShippingTaxApiCalc
      * @return string The existing or newly generated authentication token.
      */
 
-    private function payu_generate_authentication_token($user_id)
+    private function payu_generate_authentication_token($user_id, $email)
     {
+        error_log('Generating token for user ID: ' . $user_id . ' with email: ' . $email);
+
         $stored_token = get_user_meta($user_id, 'payu_auth_token', true);
         $expiration = get_user_meta($user_id, 'payu_auth_token_expiration', true);
 
@@ -190,6 +192,16 @@ class PayuShippingTaxApiCalc
         return new WP_REST_Response($response, $response_code);
     }
 
+    /**
+     * Handles the logic for a valid token, including updating the shipping address,
+     * creating a guest user if necessary, and returning shipping data.
+     *
+     * @param array $parameters The request parameters.
+     * @param string $email The email address of the user.
+     * @param string $txnid The transaction ID.
+     * @return array An array containing the status, data, and message.
+     */
+
     private function handleValidToken($parameters, $email, $txnid)
     {
         $parameters['address']['state'] = get_state_code_by_name($parameters['address']['state']);
@@ -212,7 +224,7 @@ class PayuShippingTaxApiCalc
             // get current domin name 
             // $current_domain = parse_url(home_url(), PHP_URL_HOST);
             // $guest_email = $session_key . '@mailinator.com';
-               $current_domain = parse_url(home_url(), PHP_URL_HOST);
+            $current_domain = parse_url(home_url(), PHP_URL_HOST);
             // Check if it's a local environment
             if (
                 strpos($current_domain, 'localhost') !== false ||
@@ -223,7 +235,7 @@ class PayuShippingTaxApiCalc
             } else {
                 $guest_email = $session_key . '@' . $current_domain;
             }
-            
+
             $user_id = $this->payu_create_guest_user($guest_email);
             if ($user_id) {
                 $this->payu_add_new_guest_user_cart_data($user_id, $session_key);
@@ -263,6 +275,14 @@ class PayuShippingTaxApiCalc
         }
     }
 
+    /**
+     * Updates the shipping and billing address of the order.
+     *
+     * @param WC_Order $order The WooCommerce order object.
+     * @param array $new_address The new address data to set.
+     * @param string $email The email address to set for the order.
+     * @return WC_Order The updated order object.
+     */
     private function update_order_shipping_address($order, $new_address, $email)
     {
         $order->set_address($new_address, 'shipping');
@@ -271,12 +291,24 @@ class PayuShippingTaxApiCalc
         return $order;
     }
 
+    /**
+     * Creates a new guest user with the provided email guest_randomnumber.
+     *
+     * @param string $email The email address for the new user.
+     * @return int|false The ID of the newly created user, or false on failure.
+     */
     private function payu_create_guest_user($email)
     {
         $user_id = wp_create_user($email, wp_generate_password(), $email);
         return (!is_wp_error($user_id)) ? $user_id : false;
     }
 
+    /**
+     * Adds the cart data for a new guest user based on the session key.
+     *
+     * @param int $user_id The ID of the user.
+     * @param string $session_key The session key to retrieve the cart data.
+     */
     private function payu_add_new_guest_user_cart_data($user_id, $session_key)
     {
         global $wpdb;
@@ -289,6 +321,13 @@ class PayuShippingTaxApiCalc
         update_user_meta($user_id, '_woocommerce_persistent_cart_1', $cart_data);
     }
 
+    /**
+     * Updates the cart data for the user based on the order details against User.
+     *
+     * @param int $user_id The ID of the user.
+     * @param WC_Order $order The WooCommerce order object.
+     * @return array An array of shipping data including carrier code, method code, and costs.
+     */
     private function update_cart_data($user_id, $order)
     {
         include_once WP_PLUGIN_DIR . '/woocommerce/includes/wc-cart-functions.php';
