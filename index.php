@@ -153,12 +153,6 @@ function woocommercePayubizInit()
 function is_commercepro_enabled() {
     $payu_settings = get_option('woocommerce_payubiz_settings');
     $selected_mode = isset($payu_settings['checkout_express']) ? $payu_settings['checkout_express'] : 'redirect';
- 
-    // echo "</pre>";
-    // print_r($payu_settings);
-    // echo "</pre>";
-     //echo $selected_mode;
-    // exit;
     return ($selected_mode == 'checkout_express');
 }
 /* ==================================================================================
