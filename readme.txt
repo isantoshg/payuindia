@@ -11,7 +11,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 CommercePro payment plugin by PayU Payment Gateway (India) for WooCommerce (tested from 5.3 to 9.8.1).
 
-== Description ==
+== Description. ==
 
 Caution: Always keep backup of your existing WooCommerce installation including Mysql Database, before installing a new module.
 
