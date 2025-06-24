@@ -29,10 +29,10 @@ add_action('admin_footer', function() {
 
                     if (checkoutExperience.val() === 'checkout_express') {
                         buyNowRow.show();
-                        toggleBuyNowSettings(); // Buy Now ka checkbox dikhega to settings bhi dikhao/hide karo
+                        toggleBuyNowSettings();
                     } else {
                         buyNowRow.hide();
-                        buyNowSettings.hide(); // Buy Now UI settings bhi hide ho jaye
+                        buyNowSettings.hide();
                     }
                 }
 
@@ -233,7 +233,7 @@ isset($payu_settings['checkout_express']) && sanitize_text_field($payu_settings[
         $order->set_address( $address, 'billing' );
         $order->set_address( $address, 'shipping' );
         
-        // Set payment method (ensure yeh aapke gateway ID se match karta hai)
+        // Set payment method
         $order->set_payment_method('payubiz');
         
         // Calculate totals & update order status if required.
@@ -252,7 +252,7 @@ isset($payu_settings['checkout_express']) && sanitize_text_field($payu_settings[
         // $redirect_url = $checkout_url . '/order-pay/' . $order_id . '/?key=' . $order_key . '&order=' . $order_id;
         $redirect_url = "{$checkout_url}/order-pay/{$order_id}/?key={$order_key}&order={$order_id}";
 
-        // Prepare checkout data for PayU (example hard-coded data; adjust as needed).
+        // Prepare checkout data for PayU
         $checkout_data = array(
             'billing_alt'                 => 0,
             'billing_first_name'          => isset($address['first_name']) ? sanitize_text_field($address['first_name']) : 'test',
