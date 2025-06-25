@@ -2,8 +2,9 @@
 if (!defined('ABSPATH')) {
       exit;
 }
-if(!function_exists('payuAdminFields')){
-      function payuAdminFields(){
+if (!function_exists('payuAdminFields')) {
+      function payuAdminFields()
+      {
             $site_url = get_site_url();
             $payu_payment_success_webhook_url = $site_url . '/wp-json/payu/v1/get-payment-success-update';
             $payu_payment_failed_webhook_url = $site_url . '/wp-json/payu/v1/get-payment-failed-update';
@@ -21,27 +22,28 @@ if(!function_exists('payuAdminFields')){
                         'options' => array(
                               'redirect' => 'PayU Redirect',
                               'bolt' => 'Bolt',
-                              'checkout_express' => 'CommercePro' 
+                              'checkout_express' => 'CommercePro'
                         ),
                         'default' => 'redirect'
                   ),
                   'dynamic_charges_flag' => array(
                         'title' => __('Fetch Shipping Charges from Store', 'payubiz'),
                         'type' => 'checkbox',
-                        'description' => __('Make sure to add shipping charges.','payubiz'),
+                        'description' => __('Make sure to add shipping charges.', 'payubiz'),
                         'label' => __('Fetch Shipping Charges from Store', 'payubiz'),
                         'default' => 'false'
                   ),
-                  
                   'description' => array(
                         'title' => __('Description:', 'payubiz'),
                         'type' => 'textarea',
                         'description' => __(
                               'This controls the description which the user sees during checkout.',
-                              'payubiz'),
+                              'payubiz'
+                        ),
                         'default' => __(
-                              'Pay securely by UPI, Cards, Net Banking or Wallets through PayU.', 
-                              'payubiz')
+                              'Pay securely by UPI, Cards, Net Banking or Wallets through PayU.',
+                              'payubiz'
+                        )
                   ),
                   'gateway_module' => array(
                         'title' => __('Gateway Mode', 'payubiz'),
@@ -65,9 +67,9 @@ if(!function_exists('payuAdminFields')){
                         'title' => __('Webhoook URLs', 'payubiz'),
                         'type' => 'hidden',
                         'description' => __('Please add the following URLs to the PayU dashboard webhook settings:
-                        <br> <span style="font-weight:700;">Refund URL:</span> '. $payu_payment_refund_webhook_url.'<br>
-                        <span style="font-weight:700;">Success URL:</span> ' .$payu_payment_success_webhook_url.'<br>
-                        <span style="font-weight:700;">Failed URL:</span> '.$payu_payment_failed_webhook_url,'payubiz'),
+                        <br> <span style="font-weight:700;">Refund URL:</span> ' . $payu_payment_refund_webhook_url . '<br>
+                        <span style="font-weight:700;">Success URL:</span> ' . $payu_payment_success_webhook_url . '<br>
+                        <span style="font-weight:700;">Failed URL:</span> ' . $payu_payment_failed_webhook_url, 'payubiz'),
                   ),
                   'payu_account' => array(
                         'title' => __('PayU Account', 'payubiz'),
@@ -95,6 +97,13 @@ if(!function_exists('payuAdminFields')){
                         'type' => 'select',
                         'options' => payu_get_pages('Select Page'),
                         'description' => "Post payment redirect URL for which payment is not successful."
+                  ),
+                  'payu_disable_refund' => array(
+                        'title'       => __('Disable WooCommerce Refunds', 'payubiz'),
+                        'type'        => 'checkbox',
+                        'label'       => __('Disable refunds from WooCommerce', 'payubiz'),
+                        'description' => __('If checked, refunds for PayU transactions will not be processed through WooCommerce. Refunds must be issued manually from your PayU dashboard.', 'payubiz'),
+                        'default'     => 'yes',
                   ),
                   //Added Settings by SM For Buy Now
                   'enable_buy_now' => array(
@@ -199,7 +208,5 @@ if(!function_exists('payuAdminFields')){
                   'wc_payu_settings',
                   $form_fields
             );
-            
       }
-      
 }

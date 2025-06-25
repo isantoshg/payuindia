@@ -41,6 +41,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/payu-payment-gateway-api.php'
 
 require_once plugin_dir_path(__FILE__) . 'includes/payu-refund-process.php';
 
+require_once plugin_dir_path(__FILE__) . 'includes/payu-refund-control/payu-refund-control.php';
+
 require_once plugin_dir_path(__FILE__) . 'includes/payu-cart-express-checkout.php';
 
 /**
