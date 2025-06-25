@@ -114,6 +114,15 @@ class PayuVerifyPayments extends WcPayubiz
     private function handleRefundExpiredOrder($order)
     {
         $method = $order->get_payment_method();
+
+        // Check if the payment method is 'payubiz' and refund is disabled
+        $payu_settings = get_option('woocommerce_payubiz_settings');
+        if ('yes' === $payu_settings['payu_disable_refund']) {
+            return new WP_Error(
+                  'payu_refund_disabled',
+                __('Refund is disabled for PayU in WooCommerce settings. Please issue refund via PayU dashboard.', 'payubiz')
+            );
+        }
         // if ($method == 'payubiz') { #changed
         if ($method == 'payubiz' && $order->get_status() !== 'completed' && $order->get_status() !== 'processing') {
             // Handle expired order logic here
