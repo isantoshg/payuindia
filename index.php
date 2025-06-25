@@ -168,6 +168,11 @@ function enqueue_custom_block_cart_script() {
             null,
             true
         );
+
+		wp_localize_script('custom-block-cart-script', 'plugin_data', [
+			'image_path' => plugin_dir_url(__FILE__) . 'images/payment_method.svg',
+			'payulogo' => plugin_dir_url(__FILE__) . 'images/new-payu-logo.svg'
+		]);
     }
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_block_cart_script');
