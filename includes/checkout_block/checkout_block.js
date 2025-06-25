@@ -3,15 +3,15 @@ const payu_settings = window.wc.wcSettings.getSetting('payu_data', {});
 const Payulabel = window.wp.htmlEntities.decodeEntities(payu_settings.title) || window.wp.i18n.__('PayU CommercePro Plugin', 'payu');
 //console.log(label);
 
-const Content = () => {
+const Contents = () => {
     return window.wp.htmlEntities.decodeEntities(payu_settings.description || '');
 };
 
 const Payu_Block_Gateway = {
     name: 'payubiz',
     label: Payulabel,
-    content: Object(window.wp.element.createElement)(Content, null ),
-    edit: Object(window.wp.element.createElement)(Content, null ),
+    content: Object(window.wp.element.createElement)(Contents, null ),
+    edit: Object(window.wp.element.createElement)(Contents, null ),
     //canMakePayment: () => true,
     canMakePayment: () => {
         // Ensure that the payment method is available in CommercePro mode as well
