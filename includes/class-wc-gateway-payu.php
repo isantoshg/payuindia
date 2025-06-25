@@ -1,5 +1,5 @@
 <?php
-ob_start();  
+ob_start();
 if (!defined('ABSPATH')) {
 	exit;
 }
@@ -10,7 +10,7 @@ class WcPayubiz extends WC_Payment_Gateway
 {
 	protected $msg = array();
 
-	protected $logger;																						
+	protected $logger;
 
 	protected $checkout_express;
 
@@ -27,9 +27,9 @@ class WcPayubiz extends WC_Payment_Gateway
 	protected $bypass_verify_payment;
 
 	protected $site_url;
-    protected $dynamic_charges_flag;
-    
-    protected $_skuWiseTotal = 0;
+	protected $dynamic_charges_flag;
+
+	protected $_skuWiseTotal = 0;
 
 
 
@@ -44,11 +44,11 @@ class WcPayubiz extends WC_Payment_Gateway
 		$this->init_form_fields();
 		$this->init_settings();
 		$this->title = __('Credit/Debit Card & NetBanking Payment', 'payubiz');
-		$this->method_description = __('Enable secure payments through PayU using (Credit/Debit Cards, NetBanking, UPI, and Wallets).', 'payubiz');		
+		$this->method_description = __('Enable secure payments through PayU using (Credit/Debit Cards, NetBanking, UPI, and Wallets).', 'payubiz');
 		$this->supports  = array('products', 'refunds');
 		$this->description = sanitize_text_field($this->settings['description']);
 		$this->checkout_express = sanitize_text_field($this->settings['checkout_express']);
-        //$this->dynamic_charges_flag = sanitize_text_field($this->settings['dynamic_charges_flag']);
+		//$this->dynamic_charges_flag = sanitize_text_field($this->settings['dynamic_charges_flag']);
 		$this->gateway_module = sanitize_text_field($this->settings['gateway_module']);
 		$this->redirect_page_id = sanitize_text_field($this->settings['redirect_page_id']);
 
@@ -96,13 +96,13 @@ class WcPayubiz extends WC_Payment_Gateway
 		try {
 			if (PHP_VERSION_ID >= 70300) {
 				$options = session_get_cookie_params();
-				$domain = $options['domain']??'';
-				$path = $options['path']??'';
+				$domain = $options['domain'] ?? '';
+				$path = $options['path'] ?? '';
 				$expire = 0;
 				$cookies = $_COOKIE;
 				foreach ($cookies as $key => $value) {
 					if (!preg_match('/cart/', sanitize_key($key))) {
-						setcookie(sanitize_key($key), sanitize_text_field($value), $expire,$path,$domain,true,true);
+						setcookie(sanitize_key($key), sanitize_text_field($value), $expire, $path, $domain, true, true);
 					}
 				}
 			} else {
@@ -128,7 +128,7 @@ class WcPayubiz extends WC_Payment_Gateway
 	public function admin_options()
 	{
 		echo '<h3>' . esc_html__('PayU India', 'payubiz') . '</h3>';
-		echo '<p>' . sprintf( __( '<a target="_blank" href="https://onboarding.payu.in/app/account/signup?partner_name=WooCommerce&partner_source=Affiliate+Links&partner_uuid=11eb-3a29-70592552-8c2b-0a696b110fde&source=Partner">Sign up</a> for a PayU merchant account to get started or <a target="_blank" href="https://onboarding.payu.in/app/account/login?partner_name=WooCommerce&partner_source=Affiliate+Links&partner_uuid=11eb-3a29-70592552-8c2b-0a696b110fde&source=Partner">login</a> to your existing account.', 'payubiz' ) ) . '</p>';
+		echo '<p>' . sprintf(__('<a target="_blank" href="https://onboarding.payu.in/app/account/signup?partner_name=WooCommerce&partner_source=Affiliate+Links&partner_uuid=11eb-3a29-70592552-8c2b-0a696b110fde&source=Partner">Sign up</a> for a PayU merchant account to get started or <a target="_blank" href="https://onboarding.payu.in/app/account/login?partner_name=WooCommerce&partner_source=Affiliate+Links&partner_uuid=11eb-3a29-70592552-8c2b-0a696b110fde&source=Partner">login</a> to your existing account.', 'payubiz')) . '</p>';
 		if (PHP_VERSION_ID < 70300) {
 			echo "<h1 style=\"color:red;\">" . esc_html__('**Notice: PayU payment plugin requires PHP v7.3 or higher.<br />
 			Plugin will not work properly below PHP v7.3 due to SameSite cookie restriction.', 'payubiz') . "</h1>";
@@ -219,7 +219,7 @@ class WcPayubiz extends WC_Payment_Gateway
 		if (!$this->isWcApi()) {
 			return;
 		}
-		
+
 		$postdata = $this->preparePostdata();
 		$payuPaymentValidation = new PayuPaymentValidation();
 		$payuPaymentValidation->payuPaymentValidationAndRedirect($postdata);
@@ -257,11 +257,11 @@ class WcPayubiz extends WC_Payment_Gateway
 			);
 			payu_insert_event_logs($args_log);
 		}
-		
+
 		foreach ($_POST as $key => $val) {
 			$postdata[$key] = in_array(
 				$key,
-				['transaction_offer', 'cart_details', 'shipping_address','extra_charges']
+				['transaction_offer', 'cart_details', 'shipping_address', 'extra_charges']
 			) ?
 				$val : sanitize_text_field($val);
 		}
@@ -287,9 +287,9 @@ class WcPayubiz extends WC_Payment_Gateway
 		//For wooCoomerce 2.0
 		$redirect_url = add_query_arg('wc-api', get_class($this), $redirect_url);
 		WC()->session->set('orderid_awaiting_payubiz', $order_id);
-        $txnid = $order_id . '_' . date("ymd") . '_' . random_int(1, 100);
+		$txnid = $order_id . '_' . date("ymd") . '_' . random_int(1, 100);
 		update_post_meta($order_id, 'order_txnid', $txnid);
-		
+
 
 		$order->calculate_totals();
 		//do we have a phone number?
@@ -298,7 +298,7 @@ class WcPayubiz extends WC_Payment_Gateway
 		// $address = $address . ' ' . sanitize_text_field($order->billing_address_2);
 		// }
 		$address = sanitize_text_field($order->get_billing_address_1()); {
-		$address = $address . ' ' . sanitize_text_field($order->get_billing_address_2());
+			$address = $address . ' ' . sanitize_text_field($order->get_billing_address_2());
 		}
 
 		$sku_details = $this->payuGetOrderSkuDetails($order);
@@ -313,20 +313,19 @@ class WcPayubiz extends WC_Payment_Gateway
 		if ('sandbox' == $this->gateway_module) {
 			$action = esc_url(PAYU_HOSTED_PAYMENT_URL_UAT);
 		}
-        /**Disable & enable shipping charges.**/
-        $plugin_data = get_option('woocommerce_payubiz_settings');
-        $payu_dynamic_charges_flag = $plugin_data['dynamic_charges_flag'];
-        $order_subtotal = sanitize_text_field($order->get_subtotal());   
+		/**Disable & enable shipping charges.**/
+		$plugin_data = get_option('woocommerce_payubiz_settings');
+		$payu_dynamic_charges_flag = $plugin_data['dynamic_charges_flag'];
+		$order_subtotal = sanitize_text_field($order->get_subtotal());
 		$order_total_tax = sanitize_text_field($order->order_total);
-        if($payu_dynamic_charges_flag=="no"){
-		$amount = $this->checkout_express=='checkout_express'?$order_total_tax:sanitize_text_field($order->order_total);
-        }
-        else{
-        $amount = $this->checkout_express=='checkout_express'?$order_subtotal:sanitize_text_field($order->order_total);    
-        }
-        $amount=number_format($amount,2);
-        $amount=str_replace(",", "", $amount);
-        //echo $amount; exit;
+		if ($payu_dynamic_charges_flag == "no") {
+			$amount = $this->checkout_express == 'checkout_express' ? $order_total_tax : sanitize_text_field($order->order_total);
+		} else {
+			$amount = $this->checkout_express == 'checkout_express' ? $order_subtotal : sanitize_text_field($order->order_total);
+		}
+		$amount = number_format($amount, 2);
+		$amount = str_replace(",", "", $amount);
+		//echo $amount; exit;
 		$firstname = sanitize_text_field($order->billing_first_name);
 		$lastname = sanitize_text_field($order->billing_last_name);
 		$zipcode = sanitize_text_field($order->billing_postcode);
@@ -355,9 +354,9 @@ class WcPayubiz extends WC_Payment_Gateway
 		$email = isset($user_email) ? $user_email : $billing_email;
 		$phone = isset($payu_phone) ? $payu_phone : sanitize_text_field($order->billing_phone);
 		//$phone = $payu_phone ? $payu_phone : sanitize_text_field($order->billing_phone);
-        if(strlen($phone)>10){
-        $phone = substr($phone, -10);    
-        } 
+		if (strlen($phone) > 10) {
+			$phone = substr($phone, -10);
+		}
 		// $get_state_list = get_state_list();
 		// $state = $get_state_list[sanitize_text_field($order->billing_state)];
 		$get_state_list = get_state_list();
@@ -370,9 +369,9 @@ class WcPayubiz extends WC_Payment_Gateway
 		$pG = '';
 		$udf5 = 'WooCommerce';
 		$hash = $this->generateHashToken($txnid, $amount, $productInfo, $firstname, $email, $udf4, $udf5);
-		
+
 		$payu_payment_nonce = wp_nonce_field('payu_payment_nonce', 'payu_payment_nonce', true, false);
-        
+
 		$requestArr = [
 			'key' => $payu_key,
 			'Hash' => $hash,
@@ -408,48 +407,46 @@ class WcPayubiz extends WC_Payment_Gateway
 			$random_bytes = random_bytes(5);
 			$ramdom_str = bin2hex($random_bytes);
 			$c_date = gmdate('D, d M Y H:i:s T');
-            //$tax_info_data=$order->order_total-$order->get_subtotal();
-            $tax_info_data=WC()->cart->get_total_tax();
-            //$tax_info_data=round($tax_info_data, 2);            
-            $taxinfo= array(
-                'breakup'=>array( 
-                    'Standard' => "$tax_info_data"
-                ),
-                'total'=> "$tax_info_data" 
-            );  
+			//$tax_info_data=$order->order_total-$order->get_subtotal();
+			$tax_info_data = WC()->cart->get_total_tax();
+			//$tax_info_data=round($tax_info_data, 2);            
+			$taxinfo = array(
+				'breakup' => array(
+					'Standard' => "$tax_info_data"
+				),
+				'total' => "$tax_info_data"
+			);
 
 			$order_amount = 0;
-            if($payu_dynamic_charges_flag=="no"){
-                if(wc_prices_include_tax()){
-                    $taxinfo=NULL;
-                    $order_amount  = $order->order_total;
-                    
-                }else{
-                    $taxinfo=$taxinfo;
-                    $order_amount  = $order->get_subtotal();
-                }
-               
-            } else {
-                $taxinfo=NULL;
-                $order_amount  = $order->get_subtotal();               
-            }
+			if ($payu_dynamic_charges_flag == "no") {
+				if (wc_prices_include_tax()) {
+					$taxinfo = NULL;
+					$order_amount  = $order->order_total;
+				} else {
+					$taxinfo = $taxinfo;
+					$order_amount  = $order->get_subtotal();
+				}
+			} else {
+				$taxinfo = NULL;
+				$order_amount  = $order->get_subtotal();
+			}
 			// echo "team working please wait";
 			// echo wc_prices_include_tax();
 			// echo  $payu_dynamic_charges_flag;
 
 			// exit;
-            
-            if($payu_dynamic_charges_flag=="yes" && wc_prices_include_tax()){
-                $order_amount  = $order->order_total;
-                $amount  = $order->order_total;
-            }            
-            $amount=str_replace(",", "", $amount);
-			
+
+			if ($payu_dynamic_charges_flag == "yes" && wc_prices_include_tax()) {
+				$order_amount  = $order->order_total;
+				$amount  = $order->order_total;
+			}
+			$amount = str_replace(",", "", $amount);
+
 			if (empty($email)) {
-                $email = 'guest_' . uniqid() . '@payu.in';
-                error_log('Email not found, setting default email: ' . $email);
-            }
-        
+				$email = 'guest_' . uniqid() . '@payu.in';
+				error_log('Email not found, setting default email: ' . $email);
+			}
+
 			$data_array = array(
 				'key' => $payu_key,
 				'hash' => $hash,
@@ -481,8 +478,8 @@ class WcPayubiz extends WC_Payment_Gateway
 					'shipping_charges' => NULL, // static shipping charges
 					'cod_fee' => 0, // cash on delivery fee.
 					'other_charges' => NULL,
-                    'tax_info' => $taxinfo,
-                    
+					'tax_info' => $taxinfo,
+
 				),
 				'cart_details' => array(
 					'amount' => $order_amount,
@@ -492,8 +489,8 @@ class WcPayubiz extends WC_Payment_Gateway
 
 			);
 			$data_array = payuEndPointData($data_array);
-            
-			
+
+
 			$args_ec = $this->payuExpressCheckoutScriptGenerate($data_array, $c_date, $redirect_url, $payu_payment_nonce);
 			$html = $this->payuExpressCheckoutPayment($args_ec);
 		}
@@ -507,44 +504,49 @@ class WcPayubiz extends WC_Payment_Gateway
 
 		$productInfo = '';
 
-		$default_Payu_logo = 'https://devguide.payu.in/website-assets/uploads/2021/12/new-payu-logo.svg'; 
-        
+		$default_Payu_logo = 'https://devguide.payu.in/website-assets/uploads/2021/12/new-payu-logo.svg';
+
 		foreach ($order->get_items() as $item) {
-            $variation_id = $item->get_variation_id();
-            $_product = new WC_Product_Variation($variation_id);
-            $single_sku_price= (float) $_product->get_price();
-            $single_sku_name=$_product->get_name();
-            $single_sku=$_product->get_sku();
-            $single_sku=($single_sku!="") ? $single_sku : $variation_id;
-            $single_sku_price=str_replace(",", "", $single_sku_price);
+			$variation_id = $item->get_variation_id();
+			$_product = new WC_Product_Variation($variation_id);
+			$single_sku_price = (float) $_product->get_price();
+			$single_sku_name = $_product->get_name();
+			$single_sku = $_product->get_sku();
+			$single_sku = ($single_sku != "") ? $single_sku : $variation_id;
+			$single_sku_price = str_replace(",", "", $single_sku_price);
 			$product = wc_get_product($item->get_product_id());
 			$productInfo .= $product->get_sku() . ':';
-            // $amount_per_sku= number_format($product->get_price(), 2);
-            $amount_per_sku= (float)$product->get_price();
+			// $amount_per_sku= number_format($product->get_price(), 2);
+			$amount_per_sku = (float)$product->get_price();
 
-            $amount_per_sku=str_replace(",", "", $amount_per_sku);
+			$amount_per_sku = str_replace(",", "", $amount_per_sku);
 
-			$product_image = wp_get_attachment_url($_product->get_image_id());
-			$logo = $product_image ? $product_image : $default_Payu_logo;
-            if($variation_id==0){
-                $sku_id=($product->get_sku()!="") ? $product->get_sku():$product->get_id();
-                $amount_per_sku=$amount_per_sku;
-                $product_name=$product->get_name();
-            }
-            else{
-             $sku_id=$single_sku;
-             $amount_per_sku=$single_sku_price;
-             $product_name=$single_sku_name;                 
-            }
+			// $product_image = wp_get_attachment_url($_product->get_image_id());
+			// $logo = $product_image ? $product_image : $default_Payu_logo;
+			// Get Recent product Image and show in a checkout page
+			$product_id = $product->get_id();
+			$image_id = get_post_thumbnail_id($product_id);
+			$image_url = wp_get_attachment_url($image_id);
+			$logo = $image_url ? $image_url : $default_Payu_logo;
 
-            $sku_details_array[] = array(
+			if ($variation_id == 0) {
+				$sku_id = ($product->get_sku() != "") ? $product->get_sku() : $product->get_id();
+				$amount_per_sku = $amount_per_sku;
+				$product_name = $product->get_name();
+			} else {
+				$sku_id = $single_sku;
+				$amount_per_sku = $single_sku_price;
+				$product_name = $single_sku_name;
+			}
+
+			$sku_details_array[] = array(
 				'offer_key' => array(),
 				'amount_per_sku' => $amount_per_sku,
 				'quantity' => (string)$item->get_quantity(),
 				'sku_id' => $sku_id,
-				'sku_name' => $product_name, 
+				'sku_name' => $product_name,
 				'logo' => $logo
-			);            
+			);
 		}
 
 
@@ -557,7 +559,7 @@ class WcPayubiz extends WC_Payment_Gateway
 		return array('sku_details_array' => $sku_details_array, 'product_info' => $productInfo);
 	}
 
-	
+
 
 	private function payuRedirectMethod($args_redirect)
 	{
