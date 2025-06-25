@@ -1,15 +1,15 @@
-const settings = window.wc.wcSettings.getSetting('payu_data', {});
+const payu_settings = window.wc.wcSettings.getSetting('payu_data', {});
 //console.log(settings);
-const label = window.wp.htmlEntities.decodeEntities(settings.title) || window.wp.i18n.__('PayU CommercePro Plugin', 'payu');
+const Payulabel = window.wp.htmlEntities.decodeEntities(payu_settings.title) || window.wp.i18n.__('PayU CommercePro Plugin', 'payu');
 //console.log(label);
 
 const Content = () => {
-    return window.wp.htmlEntities.decodeEntities(settings.description || '');
+    return window.wp.htmlEntities.decodeEntities(payu_settings.description || '');
 };
 
-const Block_Gateway = {
+const Payu_Block_Gateway = {
     name: 'payubiz',
-    label: label,
+    label: Payulabel,
     content: Object(window.wp.element.createElement)(Content, null ),
     edit: Object(window.wp.element.createElement)(Content, null ),
     //canMakePayment: () => true,
@@ -18,12 +18,12 @@ const Block_Gateway = {
         console.log('Checking canMakePayment for PayU');
         return true;  // Always return true to test
     },
-    ariaLabel: label,
+    ariaLabel: Payulabel,
     supports: {
-        features: settings.supports,
+        features: payu_settings.supports,
     },
 };  
 // console.log("====== Block Gateway ==============");
-// console.log(Block_Gateway);
-window.wc.wcBlocksRegistry.registerPaymentMethod( Block_Gateway );
+// console.log(Payu_Block_Gateway);
+window.wc.wcBlocksRegistry.registerPaymentMethod( Payu_Block_Gateway );
  
